@@ -40,6 +40,30 @@
     <p class="legend"><span class="empty-dot"></span> Empty slots execute as NOP · Click a card, then a memory tile · Change slots any time before RUN TURN</p>
   </main>
 
+  <button id="how-to-play" class="help-button" type="button" aria-haspopup="dialog" aria-controls="how-to-overlay" aria-expanded="false">
+    <span aria-hidden="true">?</span> HOW TO PLAY
+  </button>
+
+  <div id="how-to-overlay" class="overlay help-overlay hidden">
+    <section class="modal help-modal" role="dialog" aria-modal="true" aria-labelledby="how-to-title">
+      <button id="close-how-to" class="modal-close" type="button" aria-label="Close how to play">×</button>
+      <p class="terminal-label">PLAYER MANUAL // QUICK START</p>
+      <h2 id="how-to-title">How to play</h2>
+      <ol class="how-to-steps">
+        <li><strong>Keep your mission secret.</strong> On your turn, reveal your private hand and objective only after the computer has been passed to you.</li>
+        <li><strong>Program the board.</strong> Select one instruction card, then choose any memory tile. You may move the staged card to another tile before running.</li>
+        <li><strong>Run the CPU.</strong> Your program counter advances one tile and executes its instruction. Empty tiles are <b>NOP</b>; branch instructions may continue execution, up to five instructions.</li>
+        <li><strong>Watch the registers.</strong> Instructions modify the shared R0–R3 values. Register values wrap between −8 and +7.</li>
+        <li><strong>Complete your objective.</strong> If the registers satisfy your secret objective after execution, you win. Otherwise, pass the computer to the next player.</li>
+      </ol>
+      <div class="instruction-key">
+        <strong>INSTRUCTION KEY</strong>
+        <p><b>MOVE</b> sets · <b>ADD / SUB</b> changes · <b>INC / DEC</b> shifts by 1 · <b>NEG</b> reverses sign · <b>CLR</b> resets to 0 · <b>SWAP</b> exchanges registers · <b>BRA</b> moves your program counter</p>
+      </div>
+      <button id="got-it" class="primary" type="button">GOT IT</button>
+    </section>
+  </div>
+
   <div id="setup-overlay" class="overlay">
     <section class="modal setup-modal">
       <p class="terminal-label">BOOT SEQUENCE // LOCAL MULTIPLAYER</p>

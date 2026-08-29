@@ -29,3 +29,21 @@ button, input { font: inherit; }
 .log-panel { min-height: 0; overflow: hidden; }.action-log { margin: 0; padding: 0 0 0 20px; color: #9db8b9; font-size: .6rem; line-height: 1.42; column-count: 2; column-gap: 24px; }.action-log li:first-child { color: var(--green); }.legend { max-width: 800px; margin: 10px auto 0; text-align: center; color: var(--muted); font-size: .66rem; }.empty-dot { display: inline-block; width: 6px; height: 6px; border: 1px solid var(--muted); }
 .overlay { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: #02080be8; backdrop-filter: blur(7px); }.overlay.hidden { display: none; }.modal { width: min(460px, 94vw); padding: 34px; text-align: center; background: #0c1c21; border: 1px solid var(--cyan); box-shadow: 0 0 50px #1ecfc833, 8px 8px 0 #061014; }.modal h2 { margin: 8px 0; color: var(--text); }.modal > p:not(.terminal-label) { color: var(--muted); font-size: .8rem; line-height: 1.5; }.terminal-label { color: var(--cyan); font-size: .68rem; letter-spacing: .14em; }.modal fieldset { border: 0; margin: 25px 0; }.modal legend { color: var(--muted); font-size: .65rem; margin: auto; }.player-options { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }.player-options input { position: absolute; opacity: 0; }.player-options span { display: grid; place-items: center; width: 58px; height: 46px; border: 1px solid var(--line); cursor: pointer; }.player-options input:checked + span { border-color: var(--amber); color: var(--amber); background: #ffc86114; box-shadow: 0 0 12px #ffc86144; }.privacy-note, .public-note { margin-top: 20px; }.pass-icon, .trophy { font-size: 3rem; color: var(--amber); }.victory-modal { border-color: var(--amber); box-shadow: 0 0 65px #ffc86144; }.victory-modal h2 { color: var(--amber); }
 @media (max-width: 740px) { :root { --tile-size: 15.5vw; --board-gap: 1px; } .masthead p { display:none; } .tile { padding: 3px; }.center-panel { padding: 5px; gap: 4px; }.cpu-panel,.private-panel,.log-panel { padding: 5px; }.register { padding: 3px; }.register-value { font-size: .9rem; }.hand { gap: 2px; }.card { min-height: 40px; }.action-log { column-count: 1; }.log-panel { display:none; }.center-panel { grid-template-rows: auto 1fr; }.tile-instruction { font-size: .48rem; }.token { width: 12px; height: 12px; } }
+
+/* How-to-play controls */
+.help-button { position: fixed; right: 22px; bottom: 20px; z-index: 25; padding: 10px 14px; border: 1px solid var(--amber); color: var(--amber); background: #0c1c21ee; font-size: .72rem; font-weight: 900; letter-spacing: .08em; cursor: pointer; box-shadow: 4px 4px 0 #061014, 0 0 18px #ffc86122; }
+.help-button span { display: inline-grid; place-items: center; width: 19px; height: 19px; margin-right: 5px; border: 1px solid currentColor; border-radius: 50%; }
+.help-button:hover { color: #071013; background: var(--amber); transform: translate(-1px, -1px); }
+.help-overlay { z-index: 40; }
+.help-modal { position: relative; width: min(650px, 94vw); max-height: min(780px, 90vh); overflow-y: auto; text-align: left; border-color: var(--amber); box-shadow: 0 0 50px #ffc86122, 8px 8px 0 #061014; }
+.help-modal h2 { color: var(--amber); font-size: 1.65rem; }
+.modal-close { position: absolute; top: 12px; right: 14px; border: 0; color: var(--muted); background: transparent; font-size: 1.8rem; line-height: 1; cursor: pointer; }
+.modal-close:hover { color: var(--amber); }
+.how-to-steps { padding-left: 1.5rem; color: var(--muted); font-size: .78rem; line-height: 1.5; }
+.how-to-steps li { margin: 10px 0; padding-left: 5px; }
+.how-to-steps li::marker, .how-to-steps strong { color: var(--cyan); }
+.instruction-key { margin: 18px 0; padding: 12px; border-left: 2px solid var(--amber); background: #071114; }
+.instruction-key > strong { color: var(--amber); font-size: .68rem; letter-spacing: .12em; }
+.instruction-key p { margin: 7px 0 0; color: var(--muted); font-size: .7rem; line-height: 1.55; }
+.instruction-key b { color: var(--text); }
+.help-modal > .primary { display: block; width: 100%; }
