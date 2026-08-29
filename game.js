@@ -54,7 +54,7 @@ function createGame(playerCount) {
     registers: { R0: 0, R1: 0, R2: 0, R3: 0 },
     board: Array(CONFIG.BOARD_SIZE).fill(null),
     turnPhase: "handoff", selectedCardIndex: null, placedTile: null,
-    log: ["Shared CPU initialized. All registers set to 0."], gameOver: false
+    log: ["Compiled initialized. All registers set to 0."], gameOver: false
   };
   for (let i = 0; i < playerCount; i += 1) {
     gameState.players.push({
