@@ -54,6 +54,7 @@ function createGame(playerCount) {
     registers: { R0: 0, R1: 0, R2: 0, R3: 0 },
     board: Array(CONFIG.BOARD_SIZE).fill(null),
     turnPhase: "handoff", selectedCardIndex: null, placedTile: null,
+    replacedInstruction: null,
     log: ["Compiled initialized. All registers set to 0."], gameOver: false
   };
   for (let i = 0; i < playerCount; i += 1) {
@@ -121,7 +122,9 @@ function renderBoard() {
     const occupants = gameState.players.filter(player => player.pc === index);
     tile.classList.toggle("empty", !instruction);
     tile.classList.toggle("selected-target", gameState.placedTile === index);
-    tile.disabled = gameState.turnPhase !== "placement" || gameState.selectedCardIndex === null;
+    const canPlace = gameState.turnPhase === "placement" && gameState.selectedCardIndex !== null;
+    const canMovePlacement = gameState.turnPhase === "ready" && gameState.placedTile !== index;
+    tile.disabled = !canPlace && !canMovePlacement;
     tile.setAttribute("aria-label", `Tile ${index}: ${instruction ? instruction.display : "empty"}. ${occupants.map(p => p.name).join(", ")}`);
     tile.innerHTML = `<span class="tile-number">MEM ${String(index).padStart(2, "0")}</span><span class="tile-instruction">${instruction ? instruction.display : "— NOP —"}</span><span class="tokens">${occupants.map(p => `<i class="token" title="${p.name}" style="background:${p.color};color:${p.color}"><span>${p.id}</span></i>`).join("")}</span>`;
   });
@@ -141,7 +144,7 @@ function renderPlayerPanel() {
   $("#current-player").style.color = player.color;
   $("#objective-text").textContent = player.objective.description;
   $("#phase-badge").textContent = gameState.turnPhase === "placement" ? "PLACE 1 CARD" : gameState.turnPhase.toUpperCase();
-  $("#turn-hint").textContent = gameState.turnPhase === "placement" ? (gameState.selectedCardIndex === null ? "Select one card, then choose any memory slot." : "Instruction selected. Now choose a board tile.") : gameState.turnPhase === "ready" ? `Instruction installed on tile ${gameState.placedTile}. Run the CPU.` : "CPU executing...";
+  $("#turn-hint").textContent = gameState.turnPhase === "placement" ? (gameState.selectedCardIndex === null ? "Select one card, then choose any memory slot." : "Instruction selected. Now choose a board tile.") : gameState.turnPhase === "ready" ? `Instruction staged on tile ${gameState.placedTile}. Click another memory slot to move it, or run the CPU.` : "CPU executing...";
   renderHand();
   $("#run-turn").disabled = gameState.turnPhase !== "ready";
 }
@@ -158,13 +161,30 @@ function selectCard(index) {
   gameState.selectedCardIndex = index; renderGame();
 }
 function placeInstruction(tileIndex) {
+  if (gameState.turnPhase === "ready") {
+    movePlacedInstruction(tileIndex);
+    return;
+  }
   if (gameState.turnPhase !== "placement" || gameState.selectedCardIndex === null) return;
   const player = gameState.players[gameState.currentPlayerIndex];
   const [card] = player.hand.splice(gameState.selectedCardIndex, 1);
+  gameState.replacedInstruction = gameState.board[tileIndex];
   gameState.board[tileIndex] = card;
   player.hand.push(generateInstruction());
   gameState.selectedCardIndex = null; gameState.placedTile = tileIndex; gameState.turnPhase = "ready";
   addLog(`${player.name} placed ${card.display} on tile ${tileIndex}.`); renderGame();
+}
+
+function movePlacedInstruction(tileIndex) {
+  if (gameState.turnPhase !== "ready" || gameState.placedTile === null || tileIndex === gameState.placedTile) return;
+  const previousTile = gameState.placedTile;
+  const card = gameState.board[previousTile];
+  gameState.board[previousTile] = gameState.replacedInstruction;
+  gameState.replacedInstruction = gameState.board[tileIndex];
+  gameState.board[tileIndex] = card;
+  gameState.placedTile = tileIndex;
+  addLog(`${gameState.players[gameState.currentPlayerIndex].name} moved ${card.display} from tile ${previousTile} to tile ${tileIndex}.`);
+  renderGame();
 }
 
 // === Turn handling and instruction execution ===
@@ -232,7 +252,7 @@ function checkObjective(player) { return player.objective.check(gameState.regist
 
 function endTurn() {
   gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
-  gameState.turnPhase = "handoff"; gameState.selectedCardIndex = null; gameState.placedTile = null;
+  gameState.turnPhase = "handoff"; gameState.selectedCardIndex = null; gameState.placedTile = null; gameState.replacedInstruction = null;
   renderGame(); showPassScreen();
 }
 function showPassScreen() {
@@ -267,4 +287,4 @@ $("#run-turn").addEventListener("click", runTurn);
 $("#new-game").addEventListener("click", () => window.location.reload());
 
 // Small test/debug surface; gameplay does not depend on it.
-window.AssemblyGame = { CONFIG, createGame, generateInstruction, normalizeRegister, executeInstruction, getState: () => gameState };
+window.AssemblyGame = { CONFIG, createGame, generateInstruction, normalizeRegister, executeInstruction, placeInstruction, getState: () => gameState };
