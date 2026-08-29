@@ -12,6 +12,19 @@ const CONFIG = Object.freeze({
 });
 const REGISTERS = ["R0", "R1", "R2", "R3"];
 const PLAYER_COLORS = ["#ff637d", "#52d9ff", "#ffd45b", "#a77bff"];
+const SOUNDS = Object.freeze({
+  cardSelect: new Audio("sounds/card_select.mp3"),
+  memorySlotSelect: new Audio("sounds/memory_slot_select.mp3"),
+  runTurn: new Audio("sounds/run_turn.mp3"),
+  startOfTurn: new Audio("sounds/start_of_turn.mp3")
+});
+
+Object.values(SOUNDS).forEach(sound => { sound.preload = "auto"; });
+
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
+}
 
 // === Game state ===
 let gameState = null;
@@ -158,6 +171,7 @@ function renderHand() {
 // === Card placement ===
 function selectCard(index) {
   if (gameState.turnPhase !== "placement") return;
+  playSound(SOUNDS.cardSelect);
   gameState.selectedCardIndex = index; renderGame();
 }
 function placeInstruction(tileIndex) {
@@ -172,6 +186,7 @@ function placeInstruction(tileIndex) {
   gameState.board[tileIndex] = card;
   player.hand.push(generateInstruction());
   gameState.selectedCardIndex = null; gameState.placedTile = tileIndex; gameState.turnPhase = "ready";
+  playSound(SOUNDS.memorySlotSelect);
   addLog(`${player.name} placed ${card.display} on tile ${tileIndex}.`); renderGame();
 }
 
@@ -183,6 +198,7 @@ function movePlacedInstruction(tileIndex) {
   gameState.replacedInstruction = gameState.board[tileIndex];
   gameState.board[tileIndex] = card;
   gameState.placedTile = tileIndex;
+  playSound(SOUNDS.memorySlotSelect);
   addLog(`${gameState.players[gameState.currentPlayerIndex].name} moved ${card.display} from tile ${previousTile} to tile ${tileIndex}.`);
   renderGame();
 }
@@ -191,6 +207,7 @@ function movePlacedInstruction(tileIndex) {
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function runTurn() {
   if (gameState.turnPhase !== "ready" || gameState.gameOver) return;
+  playSound(SOUNDS.runTurn);
   gameState.turnPhase = "executing"; renderGame();
   const player = gameState.players[gameState.currentPlayerIndex];
   movePC(player, 1, `${player.name} advanced`);
@@ -264,6 +281,7 @@ function showPassScreen() {
 }
 function startPlayerTurn() {
   if (!gameState || gameState.gameOver) return;
+  playSound(SOUNDS.startOfTurn);
   $("#pass-overlay").classList.add("hidden"); gameState.turnPhase = "placement";
   addLog(`${gameState.players[gameState.currentPlayerIndex].name} began their turn.`); renderGame();
 }
