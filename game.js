@@ -299,6 +299,28 @@ function addLog(message) { gameState.log.unshift(message); gameState.log = gameS
 function renderActionLog() { $("#action-log").innerHTML = gameState.log.map(entry => `<li>${entry}</li>`).join(""); }
 
 // === UI events ===
+const howToOverlay = $("#how-to-overlay");
+const howToButton = $("#how-to-play");
+let helpPreviousFocus = null;
+
+function openHowTo() {
+  helpPreviousFocus = document.activeElement;
+  howToOverlay.classList.remove("hidden");
+  howToButton.setAttribute("aria-expanded", "true");
+  $("#close-how-to").focus();
+}
+
+function closeHowTo() {
+  howToOverlay.classList.add("hidden");
+  howToButton.setAttribute("aria-expanded", "false");
+  if (helpPreviousFocus) helpPreviousFocus.focus();
+}
+
+howToButton.addEventListener("click", openHowTo);
+$("#close-how-to").addEventListener("click", closeHowTo);
+$("#got-it").addEventListener("click", closeHowTo);
+howToOverlay.addEventListener("click", event => { if (event.target === howToOverlay) closeHowTo(); });
+document.addEventListener("keydown", event => { if (event.key === "Escape" && !howToOverlay.classList.contains("hidden")) closeHowTo(); });
 $("#create-game").addEventListener("click", () => createGame(Number(document.querySelector('input[name="player-count"]:checked').value)));
 $("#start-turn").addEventListener("click", startPlayerTurn);
 $("#run-turn").addEventListener("click", runTurn);
