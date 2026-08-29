@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shared CPU: Assembly Board Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead">
+    <div><span class="prompt">&gt;_</span> SHARED CPU</div>
+    <p>One program. Many agendas.</p>
+  </header>
+
+  <main id="game" class="game-shell" aria-live="polite">
+    <section id="board" class="board" aria-label="20-slot shared program board">
+      <div class="center-panel">
+        <section class="cpu-panel" aria-labelledby="cpu-title">
+          <div class="panel-heading"><span id="cpu-title">SHARED CPU</span><span class="live-light">PUBLIC</span></div>
+          <div id="registers" class="registers"></div>
+        </section>
+
+        <section id="private-panel" class="private-panel private-hidden">
+          <div class="turn-heading">
+            <div><span class="eyebrow">ACTIVE PROCESS</span><h1 id="current-player">Awaiting setup</h1></div>
+            <span id="phase-badge" class="phase-badge">HANDOFF</span>
+          </div>
+          <div class="objective"><span>SECRET OBJECTIVE</span><strong id="objective-text">Classified</strong></div>
+          <p id="turn-hint" class="turn-hint">Select one card, then choose a memory slot.</p>
+          <div id="hand" class="hand" aria-label="Instruction card hand"></div>
+          <button id="run-turn" class="primary" type="button" disabled>RUN TURN <span>▶</span></button>
+        </section>
+
+        <section class="log-panel">
+          <div class="panel-heading"><span>ACTION LOG</span><span>LAST 10</span></div>
+          <ol id="action-log" class="action-log"><li>CPU waiting for players...</li></ol>
+        </section>
+      </div>
+    </section>
+    <p class="legend"><span class="empty-dot"></span> Empty slots execute as NOP · Click a card, then any memory tile</p>
+  </main>
+
+  <div id="setup-overlay" class="overlay">
+    <section class="modal setup-modal">
+      <p class="terminal-label">BOOT SEQUENCE // LOCAL MULTIPLAYER</p>
+      <h2>Initialize shared program?</h2>
+      <p>Compete over one tiny CPU. Build the program together, but keep your objective secret.</p>
+      <fieldset>
+        <legend>NUMBER OF PLAYERS</legend>
+        <div class="player-options">
+          <label><input type="radio" name="player-count" value="2" checked><span>2</span></label>
+          <label><input type="radio" name="player-count" value="3"><span>3</span></label>
+          <label><input type="radio" name="player-count" value="4"><span>4</span></label>
+        </div>
+      </fieldset>
+      <button id="create-game" class="primary" type="button">INITIALIZE GAME</button>
+      <p class="privacy-note">▣ Pass-and-play privacy screens protect each player's cards and objective.</p>
+    </section>
+  </div>
+
+  <div id="pass-overlay" class="overlay hidden">
+    <section class="modal pass-modal">
+      <div class="pass-icon">↻</div>
+      <p class="terminal-label">PRIVATE DATA LOCKED</p>
+      <h2 id="pass-title">Pass to Player 1</h2>
+      <p>Make sure only the named player can see the screen before continuing.</p>
+      <button id="start-turn" class="primary" type="button">START PLAYER 1 TURN</button>
+      <p class="public-note">The board and shared registers are always public.</p>
+    </section>
+  </div>
+
+  <div id="victory-overlay" class="overlay hidden">
+    <section class="modal victory-modal">
+      <p class="terminal-label">OBJECTIVE SATISFIED</p>
+      <div class="trophy">★</div>
+      <h2 id="victory-title">Player 1 wins!</h2>
+      <p id="victory-objective"></p>
+      <button id="new-game" class="primary" type="button">NEW GAME</button>
+    </section>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
